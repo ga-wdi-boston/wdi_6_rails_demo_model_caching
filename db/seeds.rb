@@ -1,4 +1,4 @@
-num_users = 5
+num_users = 300
 num_users.times do |i|
   User.create!(email: Faker::Internet.email)  
 end
