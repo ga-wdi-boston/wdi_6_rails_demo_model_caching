@@ -1,14 +1,14 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: wdi_6_rails_demo_newrelic_development
+  database: wdi_6_rails_demo_model_caching
 
 test:
   adapter: postgresql
   encoding: unicode
-  database: wdi_6_rails_demo_newrelic_test
+  database: wdi_6_rails_demo_model_caching
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: wdi_6_rails_demo_newrelic_production
+  database: wdi_6_rails_demo_model_caching
