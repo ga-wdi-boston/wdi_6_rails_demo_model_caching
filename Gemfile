@@ -57,6 +57,10 @@ group :development do
 
   # Ruby/CLI: Automatic lossless reduction of all your images
   gem 'smusher'
+
+  # Provides a breakdown of how much time is spent in 
+  # each part of our app.
+  gem 'rack-mini-profiler'
 end
 
 
