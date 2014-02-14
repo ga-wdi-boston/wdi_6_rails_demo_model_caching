@@ -1,16 +1,19 @@
 class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
+  before_action :invalidate_all_articles, only: [:create, :update, :destroy]
 
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
-    #@articles = Article.includes(:comments).all    
+    @articles = Article.cached_all
+    # @articles = Article.includes(:comments).all    
   end
 
   # GET /articles/1
   # GET /articles/1.json
   def show
+    @comments = @article.cached_comments
+    # @comments = @article.comments.includes(:user)
   end
 
   # GET /articles/new
@@ -55,6 +58,7 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1
   # DELETE /articles/1.json
   def destroy
+   
     @article.destroy
     respond_to do |format|
       format.html { redirect_to articles_url }
@@ -65,12 +69,16 @@ class ArticlesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
-#       @article = Article.includes(:comments).find(params[:id])
+#      @article = Article.includes(:comments).find(params[:id])
       @article = Article.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def article_params
       params.require(:article).permit(:title, :body, :published)
+    end
+
+    def invalidate_all_articles
+       Rails.cache.delete([Article.name, 'all_of_em'])
     end
 end
