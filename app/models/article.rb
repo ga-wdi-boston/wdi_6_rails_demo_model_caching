@@ -1,6 +1,10 @@
 class Article < ActiveRecord::Base
   has_many :comments
 
+  def self.cached_all
+    Rails.cache.fetch([name, 'cached_all']){ all }
+  end
+
   def cached_comments
     Rails.cache.fetch([self, 'cached_comments']) { comments.includes(:user) }
   end
