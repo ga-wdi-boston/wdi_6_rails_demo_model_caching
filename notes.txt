@@ -1,0 +1,71 @@
+* Open rails console
+
+* What cache are we using?
+
+[23] pry(main)> Rails.cache.class
+=> ActiveSupport::Cache::FileStore
+
+* Lets change this to use cache into Memory
+ Change this line the config/environments/development.rb
+ config.action_controller.perform_caching = true
+ config.cache_store = :memory_store, { size: 64.megabytes }
+
+Now we're using the memory as a cache.
+
+[1] pry(main)> Rails.cache.class
+=> ActiveSupport::Cache::MemoryStore
+
+** Typically we would cache into Memcache or Redis.
+
+* Rails.cache
+** Cache a value with a key.
+   key is 'time' value is the Time.
+   Rails.cache.fetch('time') { Time.now}
+
+Try this a couple of times and you see that we "cached" the first Time.
+
+* AR  constructs a cache key
+article = Article.last
+article.cache_key
+=> "articles/10-20140213204923915483000"
+
+This is a UID comprised of the class name, articles, the id and the updated at timestamp.
+
+If we update the model the cache key will change.
+
+article.touch
+article.cache_key
+=> "articles/10-20140214024749529002000"
+
+
+* We can pass an AR instance to Rails.cache.fetch and it will use it's cache_key to generate a UID.
+
+* Let get rid of the SQL query to get the number of comments on Article 10
+http://localhost:3000/articles/10
+
+Take a look and see that we are running 2 SQL queries to get the number of comments for an Article. We're going to get rid of ONE SQL query.
+
+Lets get rid of this with a cached comment count.
+
+* In the Article model create this method:
+  def cached_comments_count
+    Rails.cache.fetch([self, 'comments_count']) { comments.size }
+  end
+
+* In the Article show view use this method to the count of comments.
+<h3>Article has <%=@article.cached_comments_count%> Comments</h3>
+
+* View the Article show page again.
+ We now only have one SQL query in when rendering the view.
+
+* We MUST invalidate this cache entry if the Article gets a new Comment.
+Add this to the Comment model.
+
+  belongs_to :article, :touch: true
+
+This will touch, change the update time, of the Article when a comment is added or removed from the article.
+
+* This works a little like a counter cache column BUT we don't have to change any DB Schema.
+
+
+* Now, lets cache all the comments for a specific Article.

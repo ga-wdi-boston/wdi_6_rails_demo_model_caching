@@ -14,7 +14,7 @@
   <strong>Published:</strong>
   <%= @article.published? %>
 </p>
-<h3>Article has <%=@article.comments.count%> Comments</h3>
+<h3>Article has <%=@article.cached_comments_count%> Comments</h3>
 
 <dl>
 <% @article.comments.includes(:user).each do |comment|
