@@ -1,6 +1,16 @@
 class Article < ActiveRecord::Base
   has_many :comments
 
+  # This callback will be fired when an article is
+  # updated or deleted.
+  after_commit :flush_cache
+
+  def flush_cache
+    # delete the cache entry that holds all articles
+    # added by self.cached_all
+    Rails.cache.delete([self.class.name, 'cached_all'])
+  end
+
   def self.cached_all
     Rails.cache.fetch([name, 'cached_all']){ all }
   end
