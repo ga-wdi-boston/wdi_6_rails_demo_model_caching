@@ -1,6 +1,10 @@
 class Article < ActiveRecord::Base
   has_many :comments
 
+  def cached_comments
+    Rails.cache.fetch([self, 'cached_comments']) { comments.includes(:user) }
+  end
+
   def cached_comments_count
     # Create a key from the self.cache_key and the string
     # 'comments_count'

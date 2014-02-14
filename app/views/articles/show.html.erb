@@ -17,7 +17,7 @@
 <h3>Article has <%=@article.cached_comments_count%> Comments</h3>
 
 <dl>
-<% @article.comments.includes(:user).each do |comment|
+<% @article.cached_comments.each do |comment|
   comment_str = comment.body? ? comment.body : 'Empty Comment'
  %>
 
