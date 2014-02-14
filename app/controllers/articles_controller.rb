@@ -1,6 +1,9 @@
 class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
 
+  # expire cache fragment set in the index page
+  before_action :expire_all_articles_fragment, only: [:create, :update, :destroy]
+
   # GET /articles
   # GET /articles.json
   def index
@@ -72,5 +75,10 @@ class ArticlesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def article_params
       params.require(:article).permit(:title, :body, :published)
+    end
+
+    def expire_all_articles_fragment
+      logger.debug ("Expiring all_articles")
+      expire_fragment("all_articles")
     end
 end

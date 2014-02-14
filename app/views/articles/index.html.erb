@@ -1,5 +1,6 @@
 <h1>Listing articles</h1>
-
+<h3> <%= Article.count %> Articles </h3>
+<% cache("all_articles") do %>  
 <table>
   <thead>
     <tr>
@@ -12,7 +13,6 @@
       <th></th>
     </tr>
   </thead>
-
   <tbody>
     <% @articles.each do |article| %>
       <tr>
@@ -27,7 +27,7 @@
     <% end %>
   </tbody>
 </table>
-
+<% end %>
 <br>
 
 <%= link_to 'New Article', new_article_path %>

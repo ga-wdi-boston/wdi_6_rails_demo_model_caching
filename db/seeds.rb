@@ -3,7 +3,7 @@ num_users.times do |i|
   User.create!(email: Faker::Internet.email)  
 end
 
-num_articles = 10
+num_articles = 1000
 num_articles.times do |i|
   # Article will have between 1 and 10 paragraphs
   article_text = Faker::Lorem.paragraphs((i%10)+1).join(' ')
